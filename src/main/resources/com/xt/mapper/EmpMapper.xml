@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xt.mapper.EmpMapper">
+<!--    <cache type="org.mybatis.caches.ehcache.EhcacheCache"/>-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="empno">
+        insert into emp(empno, ename) values (#{empno}, #{ename})
+    </insert>
+    <update id="update">
+        update emp
+        <set>
+            <if test="ename != null">
+                ename = #{ename}
+            </if>
+        </set>
+        where empno = #{empno}
+    </update>
+    <delete id="delete">
+        delete from emp where empno = #{empno}
+    </delete>
+    <select id="findByEmpno" resultType="com.xt.entity.Emp">
+        select * from emp where empno = #{empno}
+    </select>
+
+    <select id="selectEmpByEmpnoReturnMap" resultType="java.util.Map">
+        select * from emp where empno = #{empno}
+    </select>
+    <select id="selectAll" resultType="com.xt.entity.Emp">
+        select * from emp
+    </select>
+    <select id="selectAll2" resultType="java.util.Map">
+        select * from emp
+    </select>
+    <select id="selectEmpByEmpnoAndSal" resultType="com.xt.entity.Emp">
+        select * from emp where empno = #{empno} and sal = #{sal}
+    </select>
+    <select id="selectEmpByEmpnoAndSal2" resultType="com.xt.entity.Emp">
+        select * from emp where empno = #{empno} and sal = #{sal}
+    </select>
+    <select id="selectEmpByEmpnoAndSal3" resultType="com.xt.entity.Emp">
+        select * from emp where empno = #{empno} and sal = #{sal}
+    </select>
+    <select id="selectByEmpno" resultMap="myEmp">
+        select *
+        from emp e left join dept d on  e.deptno = d.deptno
+        where e.empno = #{empno}
+    </select>
+    <resultMap id="myEmp" type="com.xt.entity.Emp">
+        <id property="empno" column="empno"></id>
+        <result property="ename" column="ename"></result>
+        <result property="job" column="job"></result>
+        <result property="mgr" column="mgr"></result>
+        <result property="hiredate" column="hiredate"></result>
+        <result property="sal" column="sal"></result>
+        <result property="comm" column="common"></result>
+        <association property="dept" javaType="com.xt.entity.Dept">
+            <id property="deptno" column="deptno"></id>
+            <result property="dname" column="dname"></result>
+            <result property="loc" column="loc"></result>
+        </association>
+    </resultMap>
+    <select id="selectEmpByStep" resultMap="empMap">
+        select * from emp where empno = #{empno}
+    </select>
+    <resultMap id="empMap" type="com.xt.entity.Emp">
+        <id property="empno" column="empno"></id>
+        <result property="ename" column="ename"></result>
+        <result property="job" column="job"></result>
+        <result property="mgr" column="mgr"></result>
+        <result property="hiredate" column="hiredate"></result>
+        <result property="sal" column="sal"></result>
+        <result property="comm" column="common"></result>
+        <association property="dept" javaType="com.xt.entity.Dept" select="com.xt.mapper.DeptMapper.selectDeptByDeptno" column="deptno"></association>
+    </resultMap>
+    <select id="selectEmpByCondition" resultType="com.xt.entity.Emp">
+        select * from emp
+        <where>
+            <if test="empno != null">
+                empno = #{empno}
+            </if>
+            <if test="ename != null &amp;&amp; ename != ''">
+                and ename = #{ename}
+            </if>
+            <if test="sal != null">
+                and sal = #{sal}
+            </if>
+        </where>
+    </select>
+    <select id="selectEmpByDeptnos" resultType="com.xt.entity.Emp">
+        select * from emp where deptno in
+        <foreach collection="deptnos" open="(" close=")" separator="," item="deptno" index="didx">
+            #{deptno}
+        </foreach>
+    </select>
+    <select id="selectEmpsByDeptno" resultType="com.xt.entity.Emp">
+        select * from emp where deptno = #{deptno}
+    </select>
+</mapper>

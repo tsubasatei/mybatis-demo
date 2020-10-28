@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xt.mapper.DeptMapper">
+<!--    <cache-ref namespace="com.xt.mapper.EmpMapper"/>-->
+    <select id="selectByDeptno" resultMap="myDept">
+        select *
+        from dept d left join emp e on  d.deptno = e.deptno
+        where d.deptno = #{deptno}
+    </select>
+    <resultMap id="myDept" type="com.xt.entity.Dept">
+        <id property="deptno" column="deptno"></id>
+        <result property="dname" column="dname"></result>
+        <result property="loc" column="loc"></result>
+        <collection property="emps" ofType="com.xt.entity.Emp">
+            <id property="empno" column="empno"></id>
+            <result property="ename" column="ename"></result>
+            <result property="job" column="job"></result>
+            <result property="mgr" column="mgr"></result>
+            <result property="hiredate" column="hiredate"></result>
+            <result property="sal" column="sal"></result>
+            <result property="comm" column="common"></result>
+        </collection>
+    </resultMap>
+
+    <select id="selectDeptByStep" resultMap="deptMap">
+        select * from dept where deptno = #{deptno}
+    </select>
+    <resultMap id="deptMap" type="com.xt.entity.Dept">
+        <id property="deptno" column="deptno"></id>
+        <result property="dname" column="dname"></result>
+        <result property="loc" column="loc"></result>
+        <collection property="emps" ofType="com.xt.entity.Emp" select="com.xt.mapper.EmpMapper.selectEmpsByDeptno" column="deptno"></collection>
+    </resultMap>
+
+    <select id="selectDeptByDeptno" resultType="com.xt.entity.Dept">
+        select * from dept where deptno = #{deptno}
+    </select>
+</mapper>
